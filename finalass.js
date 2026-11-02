@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
+let users = ['1', '2', '3', '4', '5'];
+let profiles = [];
 app.get('/', (req, res) => {
     res.send('login page');
 });
@@ -35,6 +37,52 @@ app.get('/signup', (req, res) => {
     }
 
     res.send('Signup successful');
+});
+
+app.get('/createprofile', (req, res) => {
+    const { userid } = req.query;
+
+    if (!users.includes(userid)) {
+        return res.status(404).send('User does not exist');
+    }
+
+    if (profiles.includes(userid)) {
+        return res.status(400).send('Profile already exists');
+    }
+
+    profiles.push(userid);
+
+    res.send('Profile created successfully');
+});
+
+app.get('/deleteprofile', (req, res) => {
+    const { userid } = req.query;
+    if (!profiles.includes(userid)) {
+        return res.status(404).send('Profile does not exist');
+    }
+
+    profiles = profiles.filter(id => id !== userid);
+
+    res.send('Profile deleted successfully');
+});
+
+
+app.get('/withdraw-application', (req, res) => {
+    const { userid } = req.query;
+    res.send('Application withdrawn successfully');
+});
+
+app.get('/application', (req, res) => {
+    const { userid } = req.query;
+    res.send('Application submitted successfully');
+});
+
+app.get('/health', (req, res) => {
+    res.send('Server is healthy');
+});
+
+app.get('logs', (req, res) => {
+    res.send('Logs retrieved successfully');
 });
 
 app.listen(10000, () => {
